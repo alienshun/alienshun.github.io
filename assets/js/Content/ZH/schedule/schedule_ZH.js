@@ -1,0 +1,1098 @@
+(function () {
+  const LANG = { EN: "en", ZH: "zh" };
+
+  function normalizeLang(v) {
+    const s = String(v || "").toLowerCase();
+    return (s === "zh" || s.startsWith("zh")) ? LANG.ZH : LANG.EN;
+  }
+
+  function getCurrentLang() {
+    return normalizeLang((document.body && document.body.dataset && document.body.dataset.lang) || LANG.EN);
+  }
+
+  // ====== 手动维护：课程中文名 (按课程号优先匹配) ======
+  const COURSE_NAME_ZH_BY_CODE = {
+    "001046.01": "数值分析",
+    "001108.01": "数学实验",
+    "001125.01": "数值代数",
+    "001139.01": "数学建模",
+    "001356.02": "代数学基础",
+    "001361.01": "符号计算软件",
+    "001702.01": "实分析 (H)",
+    "006196.01": "多媒体技术基础",
+    "011044.02": "计算机导论",
+    "011103.02": "代数结构",
+    "011145.02": "计算机组成原理",
+    "011174.01": "操作系统原理与设计",
+    "017144.07": "随机过程 B",
+    "210706.01": "脑与认知科学导论",
+    "AI3001.02": "机器学习 A",
+    "BIO1509G.02": "人体微生物与健康",
+    "CS1001A.11": "计算机程序设计 A",
+    "CS2002.03": "数理逻辑基础",
+    "CS2502A.01": "数据结构 A",
+    "CS4017.01": "最优化导论",
+    "EDUS1001.33": "劳动教育",
+    "EE3502.01": "机器学习 B",
+    "ESS1513.01": "气象与摄影",
+    "FL1003.25": "英语交流 I",
+    "FL1004.06": "英语交流 II",
+    "FL1005.23": "英语读写 I",
+    "FL1006.07": "英语读写 II",
+    "FL1502.01": "英语口语沟通 (基础)",
+    "FS1001.48": "\"科学与社会\"研讨课",
+    "FS1001.6C": "\"科学与社会\"研讨课",
+    "HS1003.10": "艺术实践",
+    "HS1523.01": "科学之美",
+    "HS1524.01": "物理学思想史",
+    "HS1531.06": "大学生心理学",
+    "HS1534.03": "社会心理学",
+    "HS1590.01": "中国纸墨笔砚",
+    "HS1648.01": "生活中的公共事务",
+    "MATH1001.01": "数学分析 (A1)",
+    "MATH1002.02": "数学分析 (A2)",
+    "MATH1003.01": "数学分析 (A3)",
+    "MATH1004.01": "线性代数 (A1)",
+    "MATH1005.01": "线性代数 (A2)",
+    "MATH2002.02": "几何学基础",
+    "MATH2801.01": "数学强基讨论班 I",
+    "MATH2802.01": "数学强基讨论班 II",
+    "MATH3004.01": "泛函分析",
+    "MATH3007.02": "概率论",
+    "MATH3008.01": "复分析",
+    "MATH3011.01": "运筹学",
+    "MATH3012.02": "微分方程引论",
+    "MARX1005.18": "思想政治理论课实践",
+    "MARX1006.05": "形势与政策",
+    "MARX1010.11": "中国近现代史纲要",
+    "MARX1011.11": "马克思主义基本原理",
+    "MARX1012.06": "思想道德与法治",
+    "MARX1013.02": "毛泽东思想和中国特色社会主义理论体系概论",
+    "MARX1014.08": "习近平新时代中国特色社会主义思想概论",
+    "MARX1503.01": "改革开放史",
+    "MIL1001.05": "军事理论",
+    "MIL1002.05": "军事技能",
+    "MNSC4004.01": "社交媒体分析",
+    "PE00001.36": "基础体育",
+    "PE00127.06": "游泳",
+    "PE00130w.01": "散打 I",
+    "PE00139.06": "拓展训练 II",
+    "PHYS1001B.09": "力学 B",
+    "PHYS1002B.09": "热学 B",
+    "PHYS1003B.14": "光学 B",
+    "PHYS1004B.02": "电磁学 B",
+    "PHYS1005B.02": "原子物理 B",
+    "PHYS1008B.08": "大学物理基础实验 B",
+    "PHYS1009B.04": "大学物理综合实验 B",
+    "STAT2002.06": "概率论与数理统计",
+    "022063.02": "热力学与统计物理B",
+    "PLNT3006.01": "天体生物学",
+    "GEOP3009.01": "空间物理学导论",
+    "GEOP3008.01": "磁流体力学",
+    "GEOP3006.01": "空间探测综合实验",
+    "208702.01": "地球系统科学讲座",
+    "007167.01": "普通天文学",
+    "HS1505.01": "科学精神与科学方法的起源",
+    "022095.01": "量子力学C",
+    "GEOP4011.01": "遥感技术",
+    "GEOP3007.01": "流体力学",
+    "007185.01": "等离子体物理",
+    "007282.01": "空间探测仪器原理与方法",
+    "GEOP4010.01": "空间环境与航天工程",
+    "PE00118.01": "养生(2)",
+    "MARX1006.02": "形势与政策(讲座)",
+    "208701.01": "交叉研究实践",
+    "MATH2001.04": "计算方法",
+    "EDUS1001.34": "劳动教育",
+    "HS1003.17": "艺术实践",
+    "MARX1013.12": "毛泽东思想和中国特色社会主义理论体系概论",
+    "ESS2009.01": "地球科学概论-空间科学",
+    "022057.09": "电动力学",
+    "PHYS1005B.06": "原子物理B",
+    "210515.02": "电子线路",
+    "001506.04": "数理方程A",
+    "HS1651.03": "西方音乐通史",
+    "MARX1503.01": "改革开放史",
+    "MARX1005.02": "思想政治理论课实践",
+    "MARX1011.08": "马克思主义基本原理",
+    "022392.08": "理论力学A",
+    "PHYS1003A.11": "光学A",
+    "PHYS1009B.06": "大学物理-综合实验B",
+    "001505.06": "复变函数A",
+    "PE1501.01": "传统健身",
+    "BIO1506G.01": "脑科学与认知科学导论",
+    "HS1627.01": "新媒体视觉艺术：从数字影像到AI绘画",
+    "PHYS1002A.02": "热学A",
+    "PHYS1004A.08": "电磁学A",
+    "PHYS1008B.04": "大学物理-基础实验B",
+    "MATH1007.01": "数学分析(B2)",
+    "MATH1009.11": "线性代数(B1)",
+    "MARX1010.05": "中国近现代史纲要",
+    "PE00531.03": "台球(专训)",
+    "ESS1507.01": "地球探索与野外考察II",
+    "ESS1510.01": "宇宙宜居性：行星揭秘",
+    "ASTRON1501.01": "天体物理概观",
+    "FL1004.09": "英语交流II",
+    "FL1006.22": "英语读写II",
+    "FS1001.8R": "\"科学与社会\"研讨课",
+    "PE1502.01": "桥牌基础讲座与技巧",
+    "HS1531.08": "大学生心理学",
+    "MATH1006.01": "数学分析(B1)",
+    "MARX1012.12": "思想道德与法治",
+    "PHYS1001A.01": "力学A",
+    "CS1001A.09": "计算机程序设计A",
+    "MIL1001.04": "军事理论",
+    "MIL1002.04": "军事技能",
+    "MARX1014.13": "习近平新时代中国特色社会主义思想概论",
+    "ESS2006.01": "地球和空间科学基础",
+    "FS1001.0Q": "\"科学与社会\"研讨课",
+    "FL1003.19": "英语交流I",
+    "FL1005.19": "英语读写I",
+    "ESS1506.01": "地球探索与野外考察I",
+  };
+  const COURSE_NAME_ZH_BY_TEXT = {
+    "AI Ethics and Security (AI+X Micro-minor Foundation Course)": "人工智能伦理与安全 (AI+X 微专业基础课程)",
+    "Algebraic Structure": "代数结构",
+    "An Outline of Modern and Contemporary Chinese History": "中国近现代史纲要",
+    "Art Practice": "艺术实践",
+    "Artificial Intelligence and Scientific Computing (AI+X Micro-minor Core Course)": "人工智能与科学计算 (AI+X 微专业核心课程)",
+    "Atomic Physics B": "原子物理 B",
+    "Basic Sports": "基础体育",
+    "College Physics - Base Experimentation B": "大学物理基础实验 B",
+    "College Physics - Comprehensive Experimentation B": "大学物理综合实验 B",
+    "Collegiate Psychology": "大学生心理学",
+    "Complex Variable": "复分析",
+    "Computer Organization": "计算机组成原理",
+    "Computer Programming A": "计算机程序设计 A",
+    "Data Structures A": "数据结构 A",
+    "Electromagnetism B": "电磁学 B",
+    "Elementary Seminar for Qiangji Class I": "数学强基讨论班 I",
+    "Elementary Seminar for Qiangji Class II": "数学强基讨论班 II",
+    "English Communication I": "英语交流 I",
+    "English Communication II": "英语交流 II",
+    "English Oral Practice (Elementary)": "英语口语沟通 (基础)",
+    "English Reading & Writing I": "英语读写 I",
+    "English Reading & Writing II": "英语读写 II",
+    "Foundation of Algebra": "代数学基础",
+    "Foundations of Geometry": "几何学基础",
+    "Four Treasures of the Study: Chinese Paper, Ink, Pen and Inkstone": "中国纸墨笔砚",
+    "Free Combat I": "散打 I",
+    "Freshman Seminar": "\"科学与社会\"研讨课",
+    "Functional Analysis": "泛函分析",
+    "Fundamentals of Marxism": "马克思主义基本原理",
+    "Fundamentals of Multimedia Technology": "多媒体技术基础",
+    "Game Artificial Intelligence Practice (AI+X Micro-minor Practical Course)": "游戏人工智能实践 (AI+X 微专业实践课程)",
+    "History of Mind in Physics": "物理学思想史",
+    "History of Reform and Open-up": "改革开放史",
+    "Ideology, Morality, and Rule of Law": "思想道德与法治",
+    "Introduction to Artificial Intelligence (AI+X Micro-minor Foundation Course)": "人工智能导论 (AI+X 微专业基础课程)",
+    "Introduction to Brain and Cognition Science": "脑与认知科学导论",
+    "Introduction to Computer Science": "计算机导论",
+    "Introduction to Differential Equations": "微分方程引论",
+    "Introduction to Mao Zedong Thought and Theoretical System of Socialism with Chinese Characteristics": "毛泽东思想和中国特色社会主义理论体系概论",
+    "Introduction to Optimization": "最优化导论",
+    "Introduction to Xi Jinping Thought on Socialism with Chinese Characteristics for a New Era": "习近平新时代中国特色社会主义思想概论",
+    "Labor Education": "劳动教育",
+    "Large Model Architecture and Practical Application of Multi-modal Technologies (AI+X Micro-minor Practical Course)": "大模型架构与多模态应用实战 (AI+X 微专业实践课程)",
+    "Life Science: Human Microbiota and Health": "人体微生物与健康",
+    "Linear Algebra (A1)": "线性代数 (A1)",
+    "Linear Algebra (A2)": "线性代数 (A2)",
+    "Machine Learning A": "机器学习 A",
+    "Machine Learning B": "机器学习 B",
+    "Mathematical Analysis (A1)": "数学分析 (A1)",
+    "Mathematical Analysis (A2)": "数学分析 (A2)",
+    "Mathematical Analysis (A3)": "数学分析 (A3)",
+    "Mathematical Experiments": "数学实验",
+    "Mathematical Foundations of AI (AI+X Micro-minor Foundation Course)": "人工智能数学基础 (AI+X 微专业基础课程)",
+    "Mathematical Logic": "数理逻辑基础",
+    "Mathematical Modeling": "数学建模",
+    "Mathematical Software": "符号计算软件",
+    "Mechanics B": "力学 B",
+    "Meteorology and Photography": "气象与摄影",
+    "Military Skills": "军事技能",
+    "Military Theory": "军事理论",
+    "Natural Language Processing (AI+X Micro-minor Core Course)": "自然语言处理 (AI+X 微专业核心课程)",
+    "Numerical Algebra": "数值代数",
+    "Numerical Analysis": "数值分析",
+    "Operating System": "操作系统原理与设计",
+    "Operations Research": "运筹学",
+    "Optics B": "光学 B",
+    "Outward Development II": "拓展训练 II",
+    "Practice on Chinese Important Thoughts": "思想政治理论课实践",
+    "Probability Theory": "概率论",
+    "Probability Theory and Mathematical Statistics": "概率论与数理统计",
+    "Public Affairs in Life": "生活中的公共事务",
+    "Real Analysis (H)": "实分析 (H)",
+    "Situation and Policy": "形势与政策",
+    "Social Media Analytics": "社交媒体分析",
+    "Social Psychology": "社会心理学",
+    "Stochastic Processes B": "随机过程 B",
+    "Swimming": "游泳",
+    "The Beauty of Science": "科学之美",
+    "Thermotics B": "热学 B",
+    "Thermodynamics and Statistical Physics B": "热力学与统计物理B",
+    "Astrobiology": "天体生物学",
+    "Introduction to Space Physics": "空间物理学导论",
+    "Magnetohydrodynamics": "磁流体力学",
+    "Comprehensive Experiment of Space Exploration": "空间探测综合实验",
+    "Earth System Science Lecture": "地球系统科学讲座",
+    "General Astronomy": "普通天文学",
+    "The Origin of Scientific Spirit and Scientific Method": "科学精神与科学方法的起源",
+    "Quantum Mechanics C": "量子力学C",
+    "Remote Sensing Technology": "遥感技术",
+    "Fluid Mechanics": "流体力学",
+    "Plasma Physics": "等离子体物理",
+    "Principles and Methods of Space Detection Instruments": "空间探测仪器原理与方法",
+    "Space Environment and Aerospace Engineering": "空间环境与航天工程",
+    "Health Preservation (2)": "养生(2)",
+    "Situation and Policy (Lecture)": "形势与政策(讲座)",
+    "Interdisciplinary Research Practice": "交叉研究实践",
+    "Computational Methods": "计算方法",
+    "Introduction to Earth Science - Space Science": "地球科学概论-空间科学",
+    "Electrodynamics": "电动力学",
+    "Electronic Circuits": "电子线路",
+    "Mathematical Physics Equations A": "数理方程A",
+    "General History of Western Music": "西方音乐通史",
+    "Optics A": "光学A",
+    "Theoretical Mechanics A": "理论力学A",
+    "Complex Variable A": "复变函数A",
+    "Introduction to Brain and Cognitive Science": "脑科学与认知科学导论",
+    "New Media Visual Art: From Digital Imaging to AI Painting": "新媒体视觉艺术：从数字影像到AI绘画",
+    "Traditional Fitness": "传统健身",
+    "Thermology A": "热学A",
+    "Electromagnetism A": "电磁学A",
+    "Mathematical Analysis (B2)": "数学分析(B2)",
+    "Linear Algebra (B1)": "线性代数(B1)",
+    "Billiards (Specialized Training)": "台球(专训)",
+    "Earth Exploration and Field Investigation II": "地球探索与野外考察II",
+    "Cosmic Habitability: Unveiling Planets": "宇宙宜居性：行星揭秘",
+    "Overview of Astrophysics": "天体物理概观",
+    "English Communication II": "英语交流II",
+    "English Reading and Writing II": "英语读写II",
+    "Bridge Basics and Skills": "桥牌基础讲座与技巧",
+    "Mathematical Analysis (B1)": "数学分析(B1)",
+    "Mechanics A": "力学A",
+    "Fundamentals of Earth and Space Science": "地球和空间科学基础",
+    "Earth Exploration and Field Investigation I": "地球探索与野外考察I",
+    "English Reading and Writing I": "英语读写I",
+    "English Communication I": "英语交流I",
+  };
+
+  // ====== 手动维护：教师中文名 ======
+  const INSTRUCTOR_ZH_BY_TOKEN = {
+    "Ao Li": "李骜",
+    "Biao Chen": "陈彪",
+    "Bin Qian": "钱斌",
+    "Cheng Chen": "陈澄",
+    "Chen Zhao": "赵晨",
+    "Chunkai Xu": "徐春凯",
+    "Congwen Liu": "刘聪文",
+    "Da Li": "李达",
+    "Dafeng Zuo": "左达峰",
+    "Dangzheng Liu": "刘党政",
+    "Dongqing Wang": "王冬青",
+    "Falai Chen": "陈发来",
+    "Fei Wu": "吴飞",
+    "Guangbin Ren": "任广斌",
+    "Guangzhong Sun": "孙广中",
+    "Guimin Fan": "樊桂敏",
+    "Guorong Zhang": "张国荣",
+    "Hailong Liu": "刘海龙",
+    "Hao Ding": "丁浩",
+    "Hongli Xu": "徐宏力",
+    "Hu Si": "司虎",
+    "Huping Shang": "尚虎平",
+    "Jianliang Lu": "卢建良",
+    "Jinlong Li": "李金龙",
+    "Jun Si": "斯骏",
+    "Junfei Dai": "戴俊飞",
+    "Junxia Zhang": "张俊霞",
+    "Li Tang": "唐莉",
+    "Li Xiao": "肖力",
+    "Liang Wan": "万亮",
+    "Lifeng Zhao": "赵立峰",
+    "Liming Ma": "马立明",
+    "Liucheng Duan": "段柳成",
+    "Luo Luo": "罗罗",
+    "Muxi Li": "李沐西",
+    "Ming Gong": "龚明",
+    "Na Zhang": "张娜",
+    "Nenghai Yu": "俞能海",
+    "Nick": "尼克",
+    "Peijun Yao": "姚培军",
+    "Qi Cheng": "程琪",
+    "Renjie Chen": "陈仁杰",
+    "Rongde Lu": "卢荣德",
+    "Rujing Zha": "查汝晶",
+    "Runze Wu": "吴润泽",
+    "Shanyong Wang": "王善勇",
+    "Shixiang Chen": "陈士祥",
+    "Shu Zhu": "朱书",
+    "Shuguang Zhang": "张曙光",
+    "Shukun Tang": "汤书昆",
+    "Siliang Tang": "汤斯亮",
+    "Simin Li": "李思敏",
+    "Tao Wang": "汪滔",
+    "Thomas Yifang Xiao": "肖一方",
+    "Weiwei Zhuang": "庄玮玮",
+    "Wen Zeng": "曾文",
+    "Xianglan Chen": "陈香兰",
+    "Xiaobei Shen": "沈晓蓓",
+    "Xiaochu Zhang": "张效初",
+    "Xiaohua Xu": "徐小华",
+    "Xiaohui Chen": "陈晓辉",
+    "Xiao Han": "韩笑",
+    "Xiaojun Chang": "常晓军",
+    "Xinan Ma": "麻希南",
+    "Xinmao Wang": "王新茂",
+    "Xu Zhang": "张旭",
+    "Xuan Liu": "刘暄",
+    "Xuxin Hu": "虎旭昕",
+    "Yan Liang": "梁琰",
+    "Yan Xu": "徐岩",
+    "Yanan Zhao": "赵雅楠",
+    "Yanen Fan": "樊彦恩",
+    "Yangyang Fan": "樊洋洋",
+    "Yanzhi Song": "宋艳枝",
+    "Yi Li": "李毅",
+    "Yi Xie": "谢羿",
+    "Yi Zhou": "周熠",
+    "Ying Wei": "魏颖",
+    "Yingqiu Yang": "杨映秋",
+    "Yinhua Xia": "夏银华",
+    "Yu Liu": "刘宇",
+    "Yong Wang": "王永",
+    "Yumeng Liu": "刘雨萌",
+    "Yunfei Fu": "傅云飞",
+    "Zhihui Li": "李志慧",
+    "Zhengxing Huang": "黄正行",
+    "Ziqi Yang": "杨子祺",
+    "Huinan Zheng": "郑惠南",
+    "Meng Xing": "孟醒",
+    "Jihua Hao": "郝记华",
+    "Quanming Lu": "陆全明",
+    "Chuanbing Wang": "王传兵",
+    "Xiaoli Luan": "栾晓莉",
+    "Yuming Wang": "汪毓明",
+    "Yiren Li": "李毅人",
+    "Xin Fang": "方欣",
+    "Chenglong Shen": "申成龙",
+    "Yunli Shi": "石云里",
+    "Yang Zhang": "张扬",
+    "Tao Li": "李陶",
+    "Wen Yi": "易稳",
+    "Chengyun Yang": "杨成昀",
+    "Rongsheng Wang": "王荣生",
+    "Xianghui Xue": "薛向辉",
+    "Tong Dang": "党童",
+    "Tengfei Xiao": "肖腾飞",
+    "Quan Zhao": "赵泉",
+    "Huajian Yao": "姚华建",
+    "Rui Li": "李锐",
+    "Fang Huang": "黄方",
+    "Jingnan Guo": "郭静楠",
+    "Xin Tao": "陶鑫",
+    "Jinshi Xu": "许金时",
+    "Li Gu": "顾理",
+    "Shumin Li": "李书敏",
+    "Keren Shao": "邵可人",
+    "Deguang Zhang": "张德广",
+    "Geng Chen": "陈耕",
+    "Jinsong Sun": "孙劲松",
+    "Yupeng Yang": "杨昱鹏",
+    "Guoqiang Bi": "毕国强",
+    "Zhi Zhang": "张智",
+    "Yan Jin": "晋艳",
+    "Yanxiang Zhang": "张燕翔",
+    "Xinliang Gao": "高新亮",
+    "Jing Chen": "陈静",
+    "Yi Cheng": "程艺",
+    "Jun Yin": "尹俊",
+    "Ying Qi": "齐莹",
+    "Yang Hu": "胡洋",
+    "Liqun Dai": "戴立群",
+    "Zhi Xie": "谢智",
+    "Xiaodong Liu": "刘晓东",
+    "Chunsheng Wei": "魏春生",
+    "Jikun Feng": "冯吉坤",
+    "Zhu Mao": "毛竹",
+    "Wei Leng": "冷伟",
+    "Xu Kong": "孔旭",
+    "Lei Zhong": "仲雷",
+    "Xinlong Zhu": "朱信龙",
+    "Xiaosong He": "何晓松",
+    "Lijun Peng": "彭莉君",
+    "Song Wang": "王嵩",
+    "Yixiang Chen": "陈伊翔",
+    "Jinshui Huang": "黄金水",
+    "Gaopeng Lu": "陆高鹏",
+    "Ming Ma": "马明",
+    "Jianqiu Zheng": "郑建秋",
+    "Guest": "特邀教师",
+    "……": "……",
+  };
+
+  // ====== 手动维护：地点中文 ======
+  const LOCATION_ZH = {
+    "East Campus Track Field": "东区操场",
+    "West Student Activity Center (2F) Computer Lab": "西活二楼机房",
+    "Central Campus Gymnasium": "中区搏击馆",
+    "Central Campus Swimming Pool": "中区游泳馆",
+    "First Teaching Building": "第一教学楼",
+    "West Campus Electrical Building (1F) Computer Lab (Hall 1)": "西区电一楼机房1厅",
+    "West Campus Electrical Building (3F) 406, 408": "西区电三楼406、408",
+    "West Campus Electrical Building (3F) 406": "西区电三楼406",
+    "East Campus New Geospace Building (6F) Lab": "东区新地空学院楼6楼实验室",
+    "Department Arrangement": "院系安排",
+    "East Campus Humanities Building 1F": "东区人文楼一楼",
+    "East Campus Teaching Building 1 Physics Lab": "东区教1楼物理实验室",
+    "Central Gym Z101": "中体Z101",
+    "Chizhou Field Investigation": "池州考察",
+    "Central Campus Training Hall": "中区训练馆",
+    "Teaching Admin Building Room 1218": "教学行政楼1218会议室",
+    "Teaching Admin Building Room 1216": "教学行政楼1216会议室",
+    "Central Gym Z102": "中体Z102",
+    "Geospace Building Room 1216": "地空楼1216会议室",
+  };
+
+  // ====== Course Type (manual; defined in schedule_EN.js) ======
+  // Supported EN tokens: Major / Minor / Micro-minor / TA
+  const COURSE_TYPE_ZH = {
+    "Major": "主修",
+    "Micro-minor": "微专业",
+    "TA": "助教",
+  };
+
+  function normalizeCourseTypeToken(v) {
+    const s0 = String(v || "").trim();
+    if (!s0) return "";
+    const s = s0.toLowerCase();
+    if (s === "major") return "Major";
+    if (s === "minor") return "Minor";
+    if (s === "ta") return "TA";
+    if (s === "micro-minor" || s === "microminor" || s === "micro minor" || s === "micro_minor") return "Micro-minor";
+    // Fallback: keep original casing (user-defined)
+    return s0;
+  }
+
+  function getDefaultCourseTypeToken() {
+    try {
+      const v = (window && window.SCHEDULE_DEFAULT_COURSE_TYPE) ? window.SCHEDULE_DEFAULT_COURSE_TYPE : "Major";
+      return normalizeCourseTypeToken(v) || "Major";
+    } catch (e) {
+      return "Major";
+    }
+  }
+
+  function getCourseTypeByKey(key) {
+    try {
+      const map = (window && window.SCHEDULE_COURSE_TYPE_BY_KEY && typeof window.SCHEDULE_COURSE_TYPE_BY_KEY === "object")
+        ? window.SCHEDULE_COURSE_TYPE_BY_KEY
+        : null;
+      if (map && key && Object.prototype.hasOwnProperty.call(map, key)) {
+        return normalizeCourseTypeToken(map[key]);
+      }
+    } catch (e) { }
+    return "";
+  }
+
+  function getSemesterIdForNode(node) {
+    try {
+      const sem = node && node.closest ? node.closest(".semester-timetable-container") : null;
+      return (sem && sem.id) ? sem.id : "";
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function buildCourseTypeKey(node, courseCode) {
+    const semId = getSemesterIdForNode(node) || "unknown";
+    const code = String(courseCode || "").trim();
+    return `${semId}|${code}`;
+  }
+
+  // Resolve course type with priority:
+  // 1) data-course-type on the instance node (block/tr/cell)
+  // 2) global map in schedule_EN.js (window.SCHEDULE_COURSE_TYPE_BY_KEY)
+  // 3) global default (window.SCHEDULE_DEFAULT_COURSE_TYPE, default "Major")
+  function resolveCourseTypeToken(primaryNode, secondaryNode, courseCode) {
+    const direct1 = normalizeCourseTypeToken(primaryNode && primaryNode.dataset ? primaryNode.dataset.courseType : "");
+    if (direct1) return direct1;
+
+    const direct2 = normalizeCourseTypeToken(secondaryNode && secondaryNode.dataset ? secondaryNode.dataset.courseType : "");
+    if (direct2) return direct2;
+
+    const byKey = getCourseTypeByKey(buildCourseTypeKey(primaryNode || secondaryNode, courseCode));
+    if (byKey) return byKey;
+
+    return getDefaultCourseTypeToken();
+  }
+
+  function findCourseNumberLikeElement(block) {
+    if (!block || !block.querySelector) return null;
+    const cn = block.querySelector(".course-number");
+    if (cn) return cn;
+
+    // Fallback: some overlap blocks might accidentally use ".course-name" to store the course number
+    const firstName = block.querySelector(".course-name");
+    if (firstName) {
+      const txt = String(firstName.textContent || "").trim();
+      if (/^[A-Za-z]{0,8}\d{3,8}[A-Za-z]?\./.test(txt) || /^[A-Za-z]{0,8}\d{3,8}[A-Za-z]?\b/.test(txt)) {
+        return firstName;
+      }
+    }
+    return null;
+  }
+
+  function setBadgeText(badgeEl, enToken, lang) {
+    const token = normalizeCourseTypeToken(enToken) || getDefaultCourseTypeToken();
+    badgeEl.dataset.enText = token;
+    badgeEl.dataset.type = token;
+    badgeEl.textContent = (normalizeLang(lang) === LANG.ZH) ? (COURSE_TYPE_ZH[token] || token) : token;
+  }
+
+  function ensureCourseTypeBadgeInCourseBlock(block, courseCode, lang) {
+    const holder = findCourseNumberLikeElement(block);
+    if (!holder) return;
+
+    const token = resolveCourseTypeToken(block, holder, courseCode);
+
+    let badge = holder.querySelector(".course-type-badge");
+    if (!badge) {
+      badge = document.createElement("span");
+      badge.className = "course-type-badge";
+      holder.appendChild(document.createTextNode(" "));
+      holder.appendChild(badge);
+    }
+    setBadgeText(badge, token, lang);
+  }
+
+  function ensureCourseTypeBadgeInMyClassesCell(courseNumberCell, courseCode, lang) {
+    if (!courseNumberCell) return;
+    const token = resolveCourseTypeToken(courseNumberCell.closest("tr"), courseNumberCell, courseCode);
+
+    let badge = courseNumberCell.querySelector(".course-type-badge");
+    if (!badge) {
+      // Rebuild only the first column to keep it clean: "CODE  [badge]"
+      const code = String(courseCode || "").trim() || getCourseCodeFromCourseNumberText(courseNumberCell.textContent || "");
+      courseNumberCell.innerHTML = "";
+      const codeSpan = document.createElement("span");
+      codeSpan.className = "course-code";
+      codeSpan.textContent = code;
+      courseNumberCell.appendChild(codeSpan);
+      courseNumberCell.appendChild(document.createTextNode(" "));
+      badge = document.createElement("span");
+      badge.className = "course-type-badge";
+      courseNumberCell.appendChild(badge);
+    }
+    setBadgeText(badge, token, lang);
+  }
+
+
+  function getCourseCodeFromCourseNumberText(courseNumberText) {
+    const s = String(courseNumberText || "").trim();
+    if (!s) return "";
+    return s.split(/\s+/)[0] || "";
+  }
+
+  function getZhCourseName(courseCode, enName) {
+    const code = String(courseCode || "").trim();
+    const en = String(enName || "").trim();
+    return COURSE_NAME_ZH_BY_CODE[code] || COURSE_NAME_ZH_BY_TEXT[en] || en;
+  }
+
+  function translateInstructorToZh(enText) {
+    const raw = String(enText || "").trim();
+    if (!raw) return raw;
+
+    // Split by "," or ";"
+    const parts = raw.split(/\s*[,;]\s*/).filter(Boolean);
+    const mapped = parts.map(p => INSTRUCTOR_ZH_BY_TOKEN[p] || p);
+    return mapped.join("；");
+  }
+
+  function translateLocationToZh(enText) {
+    const raw = String(enText || "").trim();
+    if (!raw) return raw;
+    return LOCATION_ZH[raw] || raw;
+  }
+
+  function transformWeeksToZh(enWeeksText) {
+    let s = String(enWeeksText || "").trim();
+    if (!s) return s;
+
+    // e.g. "2-4, 6-18 week(s)" -> "第2-4、6-18周";
+    //      "2-16 (even) week(s)" -> "第2-16（双）周";
+    //      "1-15 (odd) week(s)" -> "第1-15（单）周"
+    s = s.replace(/\(\s*odd\s*\)/gi, "（单）");
+    s = s.replace(/\(\s*even\s*\)/gi, "（双）");
+    s = s.replace(/\bodd\b/gi, "单");
+    s = s.replace(/\beven\b/gi, "双");
+    s = s.replace(/week\(s\)/gi, "");
+    s = s.replace(/\s+/g, " ");
+    s = s.replace(/\s*,\s*/g, "、");
+    s = s.replace(/\s*;\s*/g, "；");
+    s = s.replace(/\s*（/g, "（").replace(/）\s*/g, "）");
+
+    return `第${s}周`;
+  }
+
+  function transformTimeHtmlToZh(enHtml) {
+    let s = String(enHtml || "");
+
+    // e.g. "5(5), 2-16 (even) week(s)" -> "5(5), 2-16（双）周"
+    s = s.replace(/Null/gi, "无");
+    s = s.replace(/\(\s*odd\s*\)/gi, "（单）");
+    s = s.replace(/\(\s*even\s*\)/gi, "（双）");
+    s = s.replace(/\bodd\b/gi, "单");
+    s = s.replace(/\beven\b/gi, "双");
+    s = s.replace(/week\(s\)/gi, "周");
+    s = s.replace(/weeks\b/gi, "周");
+    s = s.replace(/week\b/gi, "周");
+    s = s.replace(/;\s*/g, "；");
+    s = s.replace(/\s*（/g, "（").replace(/）\s*/g, "）");
+
+    return s;
+  }
+
+  function storeIfEmptyDataset(el, key, value) {
+    if (!el || !el.dataset) return;
+    if (el.dataset[key] == null) {
+      el.dataset[key] = value;
+    }
+  }
+
+  function applyMyTimetableLanguage(lang) {
+    const l = normalizeLang(lang);
+    const root = document.getElementById("my-timetable-section");
+    if (!root) return false;
+
+    // ---- 1) Timetable cells (supports overlap layouts) ----
+    const courseBlocks = root.querySelectorAll(".course-container, .overlap-course");
+    courseBlocks.forEach(block => {
+      let courseCode = "";
+      try {
+        const courseNumberEl =
+          block.querySelector(".course-number") ||
+          (block.closest("td") ? block.closest("td").querySelector(".course-number") : null) ||
+          (block.closest(".course-container") ? block.closest(".course-container").querySelector(".course-number") : null);
+        courseCode = getCourseCodeFromCourseNumberText(courseNumberEl ? courseNumberEl.textContent : "");
+      } catch (e) {
+        courseCode = "";
+      }
+
+      // ---- [NEW] Course type badge (default: Major) ----
+      try {
+        ensureCourseTypeBadgeInCourseBlock(block, courseCode, l);
+      } catch (e) { }
+
+      const nameEl = block.querySelector(".course-name");
+      if (nameEl) {
+        storeIfEmptyDataset(nameEl, "enText", nameEl.textContent);
+        nameEl.textContent = (l === LANG.ZH) ? getZhCourseName(courseCode, nameEl.dataset.enText) : nameEl.dataset.enText;
+      }
+
+      const instructorEl = block.querySelector(".instructor");
+      if (instructorEl) {
+        storeIfEmptyDataset(instructorEl, "enText", instructorEl.textContent);
+        instructorEl.textContent = (l === LANG.ZH) ? translateInstructorToZh(instructorEl.dataset.enText) : instructorEl.dataset.enText;
+      }
+
+      const locationEl = block.querySelector(".location");
+      if (locationEl) {
+        storeIfEmptyDataset(locationEl, "enText", locationEl.textContent);
+        locationEl.textContent = (l === LANG.ZH) ? translateLocationToZh(locationEl.dataset.enText) : locationEl.dataset.enText;
+      }
+
+      const weeksEl = block.querySelector(".weeks");
+      if (weeksEl) {
+        storeIfEmptyDataset(weeksEl, "enText", weeksEl.textContent);
+        weeksEl.textContent = (l === LANG.ZH) ? transformWeeksToZh(weeksEl.dataset.enText) : weeksEl.dataset.enText;
+      }
+    });
+
+    // ---- 2) "My Classes" table content ----
+    root.querySelectorAll(".my-classes-table tbody tr").forEach(tr => {
+      const cells = tr.querySelectorAll("td");
+      if (!cells || cells.length < 5) return;
+
+      // Course number (col 1)
+      const courseNumberCell = cells[0];
+      storeIfEmptyDataset(courseNumberCell, "enText", courseNumberCell.textContent.trim());
+      const courseCode = getCourseCodeFromCourseNumberText(courseNumberCell.dataset.enText);
+
+      // ---- [NEW] Course type badge (default: Major) ----
+      try {
+        ensureCourseTypeBadgeInMyClassesCell(courseNumberCell, courseCode, l);
+      } catch (e) { }
+
+
+      // Course name (col 2)
+      const nameCell = cells[1];
+      if (nameCell) {
+        storeIfEmptyDataset(nameCell, "enHtml", nameCell.innerHTML);
+        if (l === LANG.ZH) {
+          const tmp = document.createElement('div');
+          tmp.innerHTML = nameCell.dataset.enHtml;
+
+          const enNameText = (tmp.textContent || '').trim();
+          const zhName = getZhCourseName(courseCode, enNameText);
+
+          const creditSpan = tmp.querySelector('span.credits-inline');
+          const creditHtml = creditSpan ? creditSpan.outerHTML : '';
+
+          nameCell.innerHTML = `${zhName}${creditHtml}`;
+        } else {
+          nameCell.innerHTML = nameCell.dataset.enHtml;
+        }
+      }
+
+      // Instructor (col 3)
+      const instCell = cells[2];
+      if (instCell) {
+        storeIfEmptyDataset(instCell, "enHtml", instCell.innerHTML);
+        const enInstText = instCell.textContent.trim();
+        if (l === LANG.ZH) {
+          instCell.textContent = translateInstructorToZh(enInstText);
+        } else {
+          instCell.innerHTML = instCell.dataset.enHtml;
+        }
+      }
+
+      // Time (col 4)
+      const timeCell = cells[3];
+      if (timeCell) {
+        storeIfEmptyDataset(timeCell, "enHtml", timeCell.innerHTML);
+        timeCell.innerHTML = (l === LANG.ZH) ? transformTimeHtmlToZh(timeCell.dataset.enHtml) : timeCell.dataset.enHtml;
+      }
+    });
+
+    // ---- 3) Static UI texts (semester dropdown / titles / table headers) ----
+    const SEMESTER_ZH = {
+      "freshman-first": "大一上 (2023年秋季学期)",
+      "freshman-second": "大一下 (2024年春季学期)",
+      "sophomore-first": "大二上 (2024年秋季学期)",
+      "sophomore-second": "大二下 (2025年春季学期)",
+      "junior-first": "大三上 (2025年秋季学期)",
+      "junior-second": "大三下 (2026年春季学期)",
+      "senior-first": "大四上 (2026年秋季学期)",
+      "senior-second": "大四下 (2027年春季学期)",
+    };
+
+    // Dropdown button label
+    const ddBtn = root.querySelector(".semester-dropdown-btn");
+    if (ddBtn) {
+      storeIfEmptyDataset(ddBtn, "enHtml", ddBtn.innerHTML);
+      ddBtn.innerHTML = (l === LANG.ZH)
+        ? `选择学期 <i class="fas fa-caret-down"></i>`
+        : ddBtn.dataset.enHtml;
+    }
+
+    // Dropdown options
+    root.querySelectorAll(".semester-dropdown-content a[data-semester]").forEach(a => {
+      storeIfEmptyDataset(a, "enText", a.textContent);
+      const sid = a.dataset.semester;
+      if (l === LANG.ZH) {
+        a.textContent = SEMESTER_ZH[sid] || a.dataset.enText;
+      } else {
+        a.textContent = a.dataset.enText;
+      }
+    });
+
+    // Semester titles
+    root.querySelectorAll(".semester-timetable-container").forEach(container => {
+      const h3 = container.querySelector(".semester-title");
+      if (!h3) return;
+      storeIfEmptyDataset(h3, "enText", h3.textContent);
+      const sid = container.id;
+      h3.textContent = (l === LANG.ZH) ? (SEMESTER_ZH[sid] || h3.dataset.enText) : h3.dataset.enText;
+    });
+
+    // Timetable table headers
+    const TH_ZH = {
+      "Period": "时段",
+      "Period Number": "节次",
+      "Period Range": "节次范围",
+      "Monday": "周一",
+      "Tuesday": "周二",
+      "Wednesday": "周三",
+      "Thursday": "周四",
+      "Friday": "周五",
+      "Saturday": "周六",
+      "Sunday": "周日",
+      "Time": "时间",
+    };
+    root.querySelectorAll("th").forEach(th => {
+      storeIfEmptyDataset(th, "enText", th.textContent.trim());
+      const en = th.dataset.enText;
+      th.textContent = (l === LANG.ZH) ? (TH_ZH[en] || en) : en;
+    });
+
+    // Period section labels
+    const PERIOD_ZH = { "Morning": "上午", "Afternoon": "下午", "Evening": "晚上" };
+    root.querySelectorAll(".period-header").forEach(td => {
+      storeIfEmptyDataset(td, "enText", td.textContent.trim());
+      const en = td.dataset.enText;
+      td.textContent = (l === LANG.ZH) ? (PERIOD_ZH[en] || en) : en;
+    });
+
+    // "My Classes" section title and table headers
+    root.querySelectorAll(".my-classes-container h3").forEach(h3 => {
+      storeIfEmptyDataset(h3, "enText", h3.textContent.trim());
+      h3.textContent = (l === LANG.ZH) ? "我的课程" : h3.dataset.enText;
+    });
+
+    const MY_CLASSES_TH_ZH = {
+      "Course Number": "课程号",
+      "Course Name": "课程名",
+      "Instructor": "教师",
+      "Time": "时间",
+      "Credits": "学分",
+    };
+    root.querySelectorAll(".my-classes-table thead th").forEach(th => {
+      storeIfEmptyDataset(th, "enText", th.textContent.trim());
+      const en = th.dataset.enText;
+      th.textContent = (l === LANG.ZH) ? (MY_CLASSES_TH_ZH[en] || en) : en;
+    });
+
+    return true;
+  }
+
+  function applySchedulePageLanguage(lang) {
+    const l = normalizeLang(lang);
+    const scheduleRoot = document.getElementById("schedule");
+    if (!scheduleRoot) return false;
+
+    // Heading
+    const heading = scheduleRoot.querySelector(".schedule-heading");
+    if (heading) {
+      storeIfEmptyDataset(heading, "enText", heading.textContent.trim());
+      heading.textContent = (l === LANG.ZH) ? "我的日程" : heading.dataset.enText;
+    }
+
+    // Top switch buttons
+    const viewBtnZh = {
+      "my-timetable": "我的课表",
+      "ustc-timetable": "USTC 课表",
+      "timetable": "时间表",
+      "calendar": "日历",
+    };
+    scheduleRoot.querySelectorAll(".schedule-switch-btn").forEach(btn => {
+      storeIfEmptyDataset(btn, "enText", btn.textContent.trim());
+      const view = btn.dataset.view;
+      if (l === LANG.ZH) {
+        btn.textContent = viewBtnZh[view] || btn.dataset.enText;
+      } else {
+        btn.textContent = btn.dataset.enText;
+      }
+    });
+
+    // Add buttons
+    const addTimetableBtn = document.getElementById("add-timetable-event");
+    if (addTimetableBtn) {
+      storeIfEmptyDataset(addTimetableBtn, "enHtml", addTimetableBtn.innerHTML);
+      addTimetableBtn.innerHTML = (l === LANG.ZH) ? '<i class="fas fa-plus"></i> 添加课程/事件' : addTimetableBtn.dataset.enHtml;
+    }
+    const addCalendarBtn = document.getElementById("add-calendar-event");
+    if (addCalendarBtn) {
+      storeIfEmptyDataset(addCalendarBtn, "enHtml", addCalendarBtn.innerHTML);
+      addCalendarBtn.innerHTML = (l === LANG.ZH) ? '<i class="fas fa-plus"></i> 添加事件' : addCalendarBtn.dataset.enHtml;
+    }
+    const addUstcBtn = document.getElementById("add-ustc-event");
+    if (addUstcBtn) {
+      storeIfEmptyDataset(addUstcBtn, "enHtml", addUstcBtn.innerHTML);
+      addUstcBtn.innerHTML = (l === LANG.ZH) ? '<i class="fas fa-plus"></i> 添加课程' : addUstcBtn.dataset.enHtml;
+    }
+
+    // USTC local-save hint text
+    const hint = scheduleRoot.querySelector(".ustc-local-save-hint span");
+    if (hint) {
+      storeIfEmptyDataset(hint, "enText", hint.textContent.trim());
+      hint.textContent = (l === LANG.ZH)
+        ? "你的操作会保存在本地，下次打开时会自动恢复。"
+        : hint.dataset.enText;
+    }
+
+    // Global table headers inside schedule
+    const TH_ZH_GLOBAL = {
+      "Period": "时段",
+      "Period Number": "节次",
+      "Period Range": "节次范围",
+      "Time": "时间",
+      "Monday": "周一",
+      "Tuesday": "周二",
+      "Wednesday": "周三",
+      "Thursday": "周四",
+      "Friday": "周五",
+      "Saturday": "周六",
+      "Sunday": "周日",
+      "Course Name": "课程名",
+      "Course Number": "课程号",
+      "Instructor": "教师",
+      "Location": "地点",
+      "Weeks": "周次",
+      "Days": "星期",
+      "Credits": "学分",
+      "Actions": "操作",
+    };
+    scheduleRoot.querySelectorAll("th").forEach(th => {
+      storeIfEmptyDataset(th, "enText", th.textContent.trim());
+      const en = th.dataset.enText;
+      th.textContent = (l === LANG.ZH) ? (TH_ZH_GLOBAL[en] || en) : en;
+    });
+
+    // Period section labels (USTC Timetable)
+    const PERIOD_ZH = { "Morning": "上午", "Afternoon": "下午", "Evening": "晚上" };
+    scheduleRoot.querySelectorAll("#ustc-timetable-section .period-header").forEach(td => {
+      storeIfEmptyDataset(td, "enText", td.textContent.trim());
+      const en = td.dataset.enText;
+      td.textContent = (l === LANG.ZH) ? (PERIOD_ZH[en] || en) : en;
+    });
+
+    // ---- Extra: USTC list / modals / dynamic UI labels ----
+
+    // USTC classes list title
+    scheduleRoot.querySelectorAll(".ustc-classes-container h3").forEach(h3 => {
+      storeIfEmptyDataset(h3, "enText", h3.textContent.trim());
+      h3.textContent = (l === LANG.ZH) ? "课程列表" : h3.dataset.enText;
+    });
+
+    // Buttons inside USTC classes list (rendered by Schedule_Function.js)
+    const BTN_ZH = { "Edit": "编辑", "Delete": "删除" };
+    scheduleRoot.querySelectorAll(".edit-ustc-class, .delete-ustc-class").forEach(btn => {
+      storeIfEmptyDataset(btn, "enText", btn.textContent.trim());
+      const en = btn.dataset.enText;
+      btn.textContent = (l === LANG.ZH) ? (BTN_ZH[en] || en) : en;
+    });
+
+    // USTC class modal: labels
+    const LABEL_ZH = {
+      "Period Start": "开始节次",
+      "Period End": "结束节次",
+      "Course Name": "课程名",
+      "Instructor": "教师",
+      "Location": "地点",
+      "Credits": "学分",
+      "Days": "星期",
+      "Teaching Weeks (1-18)": "教学周 (1-18)",
+      "Event Title": "事件标题",
+      "Description": "描述",
+      "Start": "开始时间",
+      "End": "结束时间",
+      "Recurring Event": "重复事件",
+      "Delete": "删除",
+      "Cancel": "取消",
+      "Save": "保存",
+    };
+
+    // Regular labels with "for" attribute
+    scheduleRoot.querySelectorAll("#event-modal label[for], #general-event-modal label[for]").forEach(label => {
+      storeIfEmptyDataset(label, "enText", label.textContent.trim());
+      const en = label.dataset.enText;
+      label.textContent = (l === LANG.ZH) ? (LABEL_ZH[en] || en) : en;
+    });
+
+    // Days checkbox labels inside USTC modal
+    const dayMap = { "Mon": "周一", "Tue": "周二", "Wed": "周三", "Thu": "周四", "Fri": "周五", "Sat": "周六", "Sun": "周日" };
+    scheduleRoot.querySelectorAll("#event-modal .days-container > label").forEach(label => {
+      storeIfEmptyDataset(label, "enText", label.textContent.trim());
+      const en = label.dataset.enText; // e.g. "Mon"
+      const input = label.querySelector("input");
+      if (!input) return;
+      label.innerHTML = "";
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(" " + ((l === LANG.ZH) ? (dayMap[en] || en) : en)));
+    });
+
+    // Weeks title
+    scheduleRoot.querySelectorAll("#event-modal .weeks-title").forEach(el => {
+      storeIfEmptyDataset(el, "enText", el.textContent.trim());
+      const en = el.dataset.enText;
+      el.textContent = (l === LANG.ZH) ? (LABEL_ZH[en] || en) : en;
+    });
+
+    // Recurring checkbox label (General event modal)
+    scheduleRoot.querySelectorAll("#general-event-modal #recurring-container label").forEach(label => {
+      storeIfEmptyDataset(label, "enText", label.textContent.trim().replace(/\s+/g, " "));
+      const input = label.querySelector("input");
+      if (!input) return;
+      const enToken = "Recurring Event";
+      label.innerHTML = "";
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(" " + ((l === LANG.ZH) ? LABEL_ZH[enToken] : enToken)));
+    });
+
+    // Modal action buttons
+    const btnIds = [
+      "event-delete-btn", "event-cancel-btn",
+      "general-event-delete-btn", "general-event-cancel-btn"
+    ];
+    btnIds.forEach(id => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      storeIfEmptyDataset(btn, "enText", btn.textContent.trim());
+      const en = btn.dataset.enText;
+      btn.textContent = (l === LANG.ZH) ? (LABEL_ZH[en] || en) : en;
+    });
+    scheduleRoot.querySelectorAll("#event-modal .event-form-btn-save, #general-event-modal .event-form-btn-save").forEach(btn => {
+      storeIfEmptyDataset(btn, "enText", btn.textContent.trim());
+      const en = btn.dataset.enText;
+      btn.textContent = (l === LANG.ZH) ? (LABEL_ZH[en] || en) : en;
+    });
+
+    // Week navigation fallback
+    const weekTitle = document.getElementById("current-week");
+    if (weekTitle) {
+      storeIfEmptyDataset(weekTitle, "enText", weekTitle.textContent);
+      if (l === LANG.ZH && /^Week of\b/.test(weekTitle.dataset.enText || "")) {
+        weekTitle.textContent = weekTitle.dataset.enText.replace(/^Week of\s*/i, "本周：");
+      }
+      if (l !== LANG.ZH) {
+        weekTitle.textContent = weekTitle.dataset.enText;
+      }
+    }
+
+    return true;
+  }
+
+  function applyWithRetry(lang, retry = 0) {
+    const ok1 = applyMyTimetableLanguage(lang);
+    const ok2 = applySchedulePageLanguage(lang);
+    const ok = ok1 || ok2;
+    if (ok) return;
+    if (retry >= 20) return; // ~3s max
+    setTimeout(() => applyWithRetry(lang, retry + 1), 150);
+  }
+
+  // If the schedule module is mounted later, observe DOM and apply once it appears.
+  function watchForMyTimetableMount() {
+    if (document.getElementById("my-timetable-section")) return;
+
+    const observer = new MutationObserver(() => {
+      if (applyMyTimetableLanguage(getCurrentLang()) || applySchedulePageLanguage(getCurrentLang())) {
+        try { observer.disconnect(); } catch (e) { }
+      }
+    });
+
+    const target = document.documentElement || document.body;
+    if (target) {
+      observer.observe(target, { childList: true, subtree: true });
+      setTimeout(() => { try { observer.disconnect(); } catch (e) { } }, 30000);
+    }
+  }
+
+  // Listen Switch.js language event
+  window.addEventListener("site:langchange", function (e) {
+    const l = normalizeLang(e && e.detail && e.detail.lang);
+    applyWithRetry(l);
+  });
+
+  // Apply on load
+  watchForMyTimetableMount();
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => applyWithRetry(getCurrentLang()));
+  } else {
+    setTimeout(() => applyWithRetry(getCurrentLang()), 0);
+  }
+})();

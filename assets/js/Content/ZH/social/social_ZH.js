@@ -1,0 +1,37 @@
+/* ------------------------------
+ * Social i18n (ZH)
+ * ------------------------------ */
+(function () {
+  window.SOCIAL_ZH_I18N = {
+    social_heading: "联系我",
+
+    github_title: "GitHub",
+    github_desc: "代码仓库与项目",
+
+    link_profile: "主页",
+    link_open: "打开",
+
+    stats_heading: "网站统计",
+    metric_total: "累计 (总计)",
+    metric_month: "近 30 天",
+    metric_week: "近 7 天",
+    metric_page: "当前页面",
+    dashboard_title: "GoatCounter 面板",
+    visitor_map: "访客地图",
+
+    comments_title: "留言板",
+    comments_guest_user: "未登录用户",
+    comments_identity_guest: "点击后在评论框中登录 GitHub",
+    comments_identity_user: "已登录为 {user}",
+    comments_login_status: "请在下方评论框中点击 GitHub 登录后留言。",
+    comments_hint_intro: "欢迎留下问候、建议或学术交流信息。",
+    comments_hint_exchange: "也欢迎您在此留下个人主页或其他适宜公开的信息，以便交流互鉴、共同进步；请确保相关内容合法、合规且得体。",
+    comments_hint_support: "评论支持 ",
+    comments_hint_markdown: "GitHub Flavored Markdown",
+    comments_hint_and: " 和 ",
+    comments_hint_math: "数学公式",
+    comments_hint_suffix: "；未登录用户可点击 GitHub 登录后留言。",
+    comments_loading: "正在加载留言...",
+    comments_failed: "留言加载失败，可以在 GitHub 中打开讨论页。"
+  };
+})();
