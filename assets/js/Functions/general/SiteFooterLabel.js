@@ -6,9 +6,6 @@
 
     repositoryApi: 'https://api.github.com/repos/alienshun/new-homepage-testing',
     githubProfile: 'https://github.com/alienshun',
-    orcidProfile: 'https://orcid.org/0009-0009-1961-6829',
-    orcidIcon: 'https://orcid.org/sites/default/files/images/orcid_16x16.png',
-
     copyright: 'Copyright © 2026 Jinghao Chen',
     quote: 'You have reached the end of this page, but not the end of the journey.',
 
@@ -234,10 +231,6 @@
       `    <a class="site-footer-label__profile-link site-footer-label__github-link" href="${CONFIG.githubProfile}" target="_blank" rel="noopener noreferrer" aria-label="Open GitHub profile">`,
       `      ${githubIconSvg()}`,
       '      <span>GitHub</span>',
-      '    </a>',
-      `    <a class="site-footer-label__profile-link site-footer-label__orcid-link" href="${CONFIG.orcidProfile}" target="_blank" rel="me noopener noreferrer" aria-label="Open ORCID record 0009-0009-1961-6829">`,
-      `      <img class="site-footer-label__orcid-icon" src="${CONFIG.orcidIcon}" alt="ORCID iD icon" loading="lazy" decoding="async">`,
-      '      <span>ORCID</span>',
       '    </a>',
       '  </div>',
       '</div>'

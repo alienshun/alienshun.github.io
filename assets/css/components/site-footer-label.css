@@ -144,15 +144,6 @@
   opacity: 0.9;
 }
 
-.site-footer-label__orcid-icon {
-  width: 15px;
-  height: 15px;
-  flex: 0 0 auto;
-
-  display: inline-block;
-  object-fit: contain;
-}
-
 @media (max-width: 1180px) {
   .site-footer-label {
     width: min(100% - 28px, 620px);
