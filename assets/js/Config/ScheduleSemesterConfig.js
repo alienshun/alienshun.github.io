@@ -13,7 +13,7 @@
   */
 
   window.SCHEDULE_SEMESTER_CONFIG = {
-    defaultSemesterId: 'junior-second',
+    defaultSemesterId: 'senior-first',
 
     semesters: {
       'freshman-first': {

@@ -2796,7 +2796,6 @@ window.SCHEDULE_COURSE_TYPE_BY_KEY = window.SCHEDULE_COURSE_TYPE_BY_KEY || {
             <h3 class="semester-title">Senior Year - First Semester</h3>
             <div class="timetable-container">
               <table class="timetable" id="senior-first-timetable">
-                <!-- Empty timetable structure same as freshman-second -->
                 <thead>
                   <tr>
                     <th>Period</th>
@@ -2818,7 +2817,17 @@ window.SCHEDULE_COURSE_TYPE_BY_KEY = window.SCHEDULE_COURSE_TYPE_BY_KEY || {
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    <td class="has-class event-cell" rowspan="2">
+                      <div class="time-info start-info">7:50</div>
+                      <div class="time-info end-info">9:25</div>
+                      <div class="course-container">
+                        <div class="course-number">ASTR5001P.01 [4]</div>
+                        <div class="course-name">General Relativity</div>
+                        <div class="instructor">Wen Zhao</div>
+                        <div class="location">5504</div>
+                        <div class="weeks">2-18 week(s)</div>
+                      </div>
+                    </td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -2831,14 +2840,42 @@ window.SCHEDULE_COURSE_TYPE_BY_KEY = window.SCHEDULE_COURSE_TYPE_BY_KEY || {
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
                   </tr>
                   <tr>
                     <td class="period-number">3</td>
+                    <td class="has-class event-cell" rowspan="2">
+                      <div class="time-info start-info">9:45</div>
+                      <div class="time-info end-info">11:20</div>
+                      <div class="course-container">
+                        <div class="course-number">ASTR5001P.01 [4]</div>
+                        <div class="course-name">General Relativity</div>
+                        <div class="instructor">Wen Zhao</div>
+                        <div class="location">5504</div>
+                        <div class="weeks">2-18 week(s)</div>
+                      </div>
+                    </td>
                     <td></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
+                    <td class="has-class event-cell" rowspan="3">
+                      <div class="time-info start-info">9:45</div>
+                      <div class="time-info end-info">12:10</div>
+                      <div class="overlap-container">
+                        <div class="overlap-course">
+                          <div class="course-number">022075.01 [4]</div>
+                          <div class="course-name">Introduction to Astrophysics</div>
+                          <div class="instructor">Hongyan Zhou</div>
+                          <div class="location">2506</div>
+                          <div class="weeks">1-9 week(s)</div>
+                        </div>
+                        <div class="overlap-course">
+                          <div class="course-number">022075.01</div>
+                          <div class="course-name">Introduction to Astrophysics</div>
+                          <div class="instructor">Guilin Liu</div>
+                          <div class="location">2506</div>
+                          <div class="weeks">10-18 week(s)</div>
+                        </div>
+                      </div>
+                    </td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -2850,13 +2887,20 @@ window.SCHEDULE_COURSE_TYPE_BY_KEY = window.SCHEDULE_COURSE_TYPE_BY_KEY || {
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
                   </tr>
                   <tr>
                     <td class="period-number">5</td>
-                    <td></td>
-                    <td></td>
+                    <td class="has-class event-cell">
+                      <div class="time-info start-info">11:25</div>
+                      <div class="time-info end-info">12:10</div>
+                      <div class="course-container">
+                        <div class="course-number">ASTR5001P.01 [4]</div>
+                        <div class="course-name">General Relativity</div>
+                        <div class="instructor">Wen Zhao</div>
+                        <div class="location">5504</div>
+                        <div class="weeks">2-5 week(s)</div>
+                      </div>
+                    </td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -2869,7 +2913,26 @@ window.SCHEDULE_COURSE_TYPE_BY_KEY = window.SCHEDULE_COURSE_TYPE_BY_KEY || {
                     <td rowspan="5" class="period-header">Afternoon</td>
                     <td class="period-number">6</td>
                     <td></td>
-                    <td></td>
+                    <td class="has-class event-cell" rowspan="2">
+                      <div class="time-info start-info">14:00</div>
+                      <div class="time-info end-info">15:35</div>
+                      <div class="overlap-container">
+                        <div class="overlap-course">
+                          <div class="course-number">022075.01 [4]</div>
+                          <div class="course-name">Introduction to Astrophysics</div>
+                          <div class="instructor">Hongyan Zhou</div>
+                          <div class="location">2506</div>
+                          <div class="weeks">1-9 week(s)</div>
+                        </div>
+                        <div class="overlap-course">
+                          <div class="course-number">022075.01</div>
+                          <div class="course-name">Introduction to Astrophysics</div>
+                          <div class="instructor">Guilin Liu</div>
+                          <div class="location">2506</div>
+                          <div class="weeks">10-18 week(s)</div>
+                        </div>
+                      </div>
+                    </td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -2884,12 +2947,21 @@ window.SCHEDULE_COURSE_TYPE_BY_KEY = window.SCHEDULE_COURSE_TYPE_BY_KEY || {
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
                   </tr>
                   <tr>
                     <td class="period-number">8</td>
                     <td></td>
-                    <td></td>
+                    <td class="has-class event-cell" rowspan="3">
+                      <div class="time-info start-info">15:55</div>
+                      <div class="time-info end-info">18:20</div>
+                      <div class="course-container">
+                        <div class="course-number">HS1538.01 [2]</div>
+                        <div class="course-name">A Brief History of Western Social Thought</div>
+                        <div class="instructor">Dewei Yao</div>
+                        <div class="location">2206</div>
+                        <div class="weeks">1-13 week(s)</div>
+                      </div>
+                    </td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -2898,7 +2970,6 @@ window.SCHEDULE_COURSE_TYPE_BY_KEY = window.SCHEDULE_COURSE_TYPE_BY_KEY || {
                   </tr>
                   <tr>
                     <td class="period-number">9</td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -2914,25 +2985,42 @@ window.SCHEDULE_COURSE_TYPE_BY_KEY = window.SCHEDULE_COURSE_TYPE_BY_KEY || {
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
                   </tr>
                   
                   <!-- Evening Section -->
                   <tr>
                     <td rowspan="3" class="period-header">Evening</td>
                     <td class="period-number">11</td>
+                    <td class="has-class event-cell" rowspan="2">
+                      <div class="time-info start-info">19:30</div>
+                      <div class="time-info end-info">21:05</div>
+                      <div class="course-container">
+                        <div class="course-number">PHYS5004P.01 [4]</div>
+                        <div class="course-name">Group Theory in Physics</div>
+                        <div class="instructor">Jiejie Zhu</div>
+                        <div class="location">5104</div>
+                        <div class="weeks">2-18 week(s)</div>
+                      </div>
+                    </td>
                     <td></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
+                    <td class="has-class event-cell" rowspan="2">
+                      <div class="time-info start-info">19:30</div>
+                      <div class="time-info end-info">21:05</div>
+                      <div class="course-container">
+                        <div class="course-number">PHYS5004P.01 [4]</div>
+                        <div class="course-name">Group Theory in Physics</div>
+                        <div class="instructor">Jiejie Zhu</div>
+                        <div class="location">5104</div>
+                        <div class="weeks">2-18 week(s)</div>
+                      </div>
+                    </td>
                     <td></td>
                     <td></td>
                     <td></td>
                   </tr>
                   <tr>
                     <td class="period-number">12</td>
-                    <td></td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -2967,7 +3055,41 @@ window.SCHEDULE_COURSE_TYPE_BY_KEY = window.SCHEDULE_COURSE_TYPE_BY_KEY || {
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- No classes in this semester -->
+                  <tr>
+                    <td>022075.01</td>
+                    <td>Introduction to Astrophysics</td>
+                    <td>Guilin Liu; Hongyan Zhou</td>
+                    <td>2(6-7), 1-18 week(s); 4(3-5), 1-18 week(s)</td>
+                    <td>4</td>
+                  </tr>
+                  <tr>
+                    <td>208703.01</td>
+                    <td>Fieldwork and Practice</td>
+                    <td>Jian Huang; Ji Shen; Pulin Kang; Lu Pan; Wangye Li; Jinshui Huang</td>
+                    <td>—</td>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td>ASTR5001P.01</td>
+                    <td>General Relativity</td>
+                    <td>Wen Zhao</td>
+                    <td>1(3-4), 2-18 week(s); 1(5), 2-5 week(s); 4(1-2), 2-18 week(s)</td>
+                    <td>4</td>
+                  </tr>
+                  <tr>
+                    <td>PHYS5004P.01</td>
+                    <td>Group Theory in Physics</td>
+                    <td>Jiejie Zhu</td>
+                    <td>1(11-12), 2-18 week(s); 4(11-12), 2-18 week(s)</td>
+                    <td>4</td>
+                  </tr>
+                  <tr>
+                    <td>HS1538.01</td>
+                    <td>A Brief History of Western Social Thought</td>
+                    <td>Dewei Yao</td>
+                    <td>2(8-10), 1-13 week(s)</td>
+                    <td>2</td>
+                  </tr>
                 </tbody>
               </table>
             </div>

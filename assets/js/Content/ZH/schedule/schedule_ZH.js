@@ -149,6 +149,11 @@
     "FL1003.19": "英语交流I",
     "FL1005.19": "英语读写I",
     "ESS1506.01": "地球探索与野外考察I",
+    "022075.01": "天体物理概论",
+    "208703.01": "野外与实践",
+    "ASTR5001P.01": "广义相对论",
+    "PHYS5004P.01": "物理学中的群论",
+    "HS1538.01": "西方社会思想简史",
   };
   const COURSE_NAME_ZH_BY_TEXT = {
     "AI Ethics and Security (AI+X Micro-minor Foundation Course)": "人工智能伦理与安全 (AI+X 微专业基础课程)",
@@ -276,6 +281,11 @@
     "Earth Exploration and Field Investigation I": "地球探索与野外考察I",
     "English Reading and Writing I": "英语读写I",
     "English Communication I": "英语交流I",
+    "Introduction to Astrophysics": "天体物理概论",
+    "Fieldwork and Practice": "野外与实践",
+    "General Relativity": "广义相对论",
+    "Group Theory in Physics": "物理学中的群论",
+    "A Brief History of Western Social Thought": "西方社会思想简史",
   };
 
   // ====== 手动维护：教师中文名 ======
@@ -428,6 +438,16 @@
     "Gaopeng Lu": "陆高鹏",
     "Ming Ma": "马明",
     "Jianqiu Zheng": "郑建秋",
+    "Guilin Liu": "刘桂琳",
+    "Hongyan Zhou": "周宏岩",
+    "Jian Huang": "黄湕",
+    "Ji Shen": "沈骥",
+    "Pulin Kang": "康普霖",
+    "Lu Pan": "潘路",
+    "Wangye Li": "李王晔",
+    "Wen Zhao": "赵文",
+    "Jiejie Zhu": "朱界杰",
+    "Dewei Yao": "姚德薇",
     "Guest": "特邀教师",
     "……": "……",
   };
