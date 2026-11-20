@@ -14,6 +14,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const vm = require('vm');
 
 const ROOT = path.resolve(__dirname, '..');
 
@@ -117,12 +118,6 @@ function readText(filePath) {
   return fs.readFileSync(filePath, 'utf8');
 }
 
-function stripJavaScriptComments(text) {
-  return String(text || '')
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/(^|[^:])\/\/.*$/gm, '$1');
-}
-
 function isDirectory(filePath) {
   return exists(filePath) && fs.statSync(filePath).isDirectory();
 }
@@ -137,9 +132,10 @@ function shouldSkip(filePath) {
 }
 
 function validateDateKey(dateKey, source) {
-  if (!DATE_KEY_RE.test(dateKey)) {
-    reporter.error(`Invalid dateKey \`${dateKey}\` in ${source}. Expected YYYY_MM_DD.`);
-    return;
+  if (typeof dateKey !== 'string' || !DATE_KEY_RE.test(dateKey)) {
+    const value = typeof dateKey === 'string' ? `\`${dateKey}\`` : typeof dateKey;
+    reporter.error(`Invalid dateKey ${value} in ${source}. Expected a YYYY_MM_DD string.`);
+    return false;
   }
 
   const [year, month, day] = dateKey.split('_').map(Number);
@@ -153,6 +149,8 @@ function validateDateKey(dateKey, source) {
   if (!valid) {
     reporter.error(`Invalid calendar date \`${dateKey}\` in ${source}.`);
   }
+
+  return valid;
 }
 
 function expectedISO(dateKey) {
@@ -169,27 +167,25 @@ function extractRegisteredDates() {
     return [];
   }
 
-  const text = stripJavaScriptComments(readText(CONFIG_FILE));
-
-  const match = text.match(
-    /const\s+ACTIVITY_MOMENT_DATES\s*=\s*\[(.*?)\]\s*;/s
-  );
-
-  if (!match) {
-    reporter.error(
-      `Cannot find \`const ACTIVITY_MOMENT_DATES = [...]\` in ${rel(CONFIG_FILE)}.`
-    );
+  const context = { window: {} };
+  try {
+    vm.runInNewContext(readText(CONFIG_FILE), context, {
+      filename: CONFIG_FILE,
+      timeout: 1000
+    });
+  } catch (error) {
+    reporter.error(`Failed to evaluate ${rel(CONFIG_FILE)}: ${error.message}`);
     return [];
   }
 
-  const block = match[1];
-  const dates = [];
-  const datePattern = /['"](\d{4}_\d{2}_\d{2})['"]/g;
-
-  let item;
-  while ((item = datePattern.exec(block)) !== null) {
-    dates.push(item[1]);
+  const source = `${rel(CONFIG_FILE)} activitiesMoments.dates`;
+  const configuredDates = context.window.SiteResources?.activitiesMoments?.dates;
+  if (!Array.isArray(configuredDates)) {
+    reporter.error(`Expected an array in ${source}.`);
+    return [];
   }
+
+  const dates = Array.from(configuredDates).filter((dateKey) => validateDateKey(dateKey, source));
 
   const seen = new Set();
   const duplicates = new Set();
@@ -203,13 +199,9 @@ function extractRegisteredDates() {
 
   if (duplicates.size > 0) {
     reporter.error(
-      `Duplicate date keys in ACTIVITY_MOMENT_DATES: ${Array.from(duplicates).sort().join(', ')}`
+      `Duplicate date keys in ${source}: ${Array.from(duplicates).sort().join(', ')}`
     );
   }
-
-  dates.forEach((dateKey) => {
-    validateDateKey(dateKey, `${rel(CONFIG_FILE)} ACTIVITY_MOMENT_DATES`);
-  });
 
   return dates;
 }
@@ -257,11 +249,13 @@ function collectDetailDates() {
   return dates;
 }
 
-function collectImageDates() {
+function collectImageDates(required) {
   const dates = new Set();
 
   if (!isDirectory(IMAGE_ROOT_DIR)) {
-    reporter.error(`Missing image root directory: ${rel(IMAGE_ROOT_DIR)}`);
+    if (required || exists(IMAGE_ROOT_DIR)) {
+      reporter.error(`Expected an image root directory at ${rel(IMAGE_ROOT_DIR)}.`);
+    }
     return dates;
   }
 
@@ -495,7 +489,7 @@ function checkUnregisteredFiles(registeredDates, allKnownDates) {
     .sort()
     .forEach((dateKey) => {
       reporter.error(
-        `Date \`${dateKey}\` has files or directories but is not listed in ACTIVITY_MOMENT_DATES.`
+        `Date \`${dateKey}\` has files or directories but is not listed in activitiesMoments.dates.`
       );
     });
 
@@ -504,7 +498,7 @@ function checkUnregisteredFiles(registeredDates, allKnownDates) {
     .sort()
     .forEach((dateKey) => {
       reporter.error(
-        `Date \`${dateKey}\` is listed in ACTIVITY_MOMENT_DATES, but no matching content, detail, or image directory was found.`
+        `Date \`${dateKey}\` is listed in activitiesMoments.dates, but no matching content, detail, or image directory was found.`
       );
     });
 }
@@ -590,13 +584,12 @@ function unionSets(...sets) {
 }
 
 function main() {
-  const registeredDatesList = extractRegisteredDates();
-  const registeredDates = new Set(registeredDatesList);
+  const registeredDates = new Set(extractRegisteredDates());
 
   const enDates = findContentDates(EN_DIR, 'EN');
   const zhDates = findContentDates(ZH_DIR, 'ZH');
   const detailDates = collectDetailDates();
-  const imageDates = collectImageDates();
+  const imageDates = collectImageDates(registeredDates.size > 0);
 
   const allKnownDates = unionSets(enDates, zhDates, detailDates, imageDates);
 
@@ -606,8 +599,6 @@ function main() {
   Array.from(registeredDates)
     .sort()
     .forEach((dateKey) => {
-      validateDateKey(dateKey, 'registered activity date');
-
       const enFile = path.join(EN_DIR, `activities_moments_${dateKey}.js`);
       const zhFile = path.join(ZH_DIR, `activities_moments_${dateKey}.js`);
 

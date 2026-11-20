@@ -94,6 +94,14 @@
         <h2>教学经历</h2>
 
         <div class="subheading">
+          <span class="subheading-title">《量子力学C》课程助教</span>
+          <span>2026年秋季</span>
+        </div>
+        <div class="subsubheading">
+          <div>中国科学技术大学 地球和空间科学学院</div>
+        </div>
+
+        <div class="subheading">
           <span class="subheading-title">《电动力学》课程助教</span>
           <span>2026年春季</span>
         </div>

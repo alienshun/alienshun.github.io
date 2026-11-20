@@ -95,6 +95,14 @@
         <h2>Teaching Experience</h2>
 
         <div class="subheading">
+          <span class="subheading-title">Teaching Assistant for Quantum Mechanics C</span>
+          <span>Fall 2026</span>
+        </div>
+        <div class="subsubheading">
+          <div>School of Earth and Space Sciences, USTC</div>
+        </div>
+
+        <div class="subheading">
           <span class="subheading-title">Teaching Assistant for Electrodynamics</span>
           <span>Spring 2026</span>
         </div>
